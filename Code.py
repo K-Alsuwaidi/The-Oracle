@@ -2,12 +2,17 @@ import os
 
 import discord
 
+from dotenv import load_dotenv
+
 from discord.ext import commands
 
 import wikipedia
 
 import nest_asyncio
 nest_asyncio.apply()
+
+load_dotenv()
+TOKEN = os.getenv('DISCORD_TOKEN')
 
 
 bot = commands.Bot(command_prefix = '!!')
@@ -33,10 +38,16 @@ async def on_message(message):
         if Stringo == "!!syntax" or Stringo == "!!help":
             help_msg = "First, type !!search{topic}, after that find the topic you want to search about, after that, type !!{topic}{number of sentences}, and the result will be printed out"
             await message.channel.send(help_msg)
-        elif message.content.startswith("!!search"): #7
+        elif message.content.startswith("!!search"):
             search = Stringo[8:]
-            print(search)
             result = wikipedia.search(search, 20)
+            await message.channel.send(result)
+        elif message.content.startswith("!!page"):
+            search = Stringo[6:]
+            result = wikipedia.page(search, preload=True)
+            await message.channel.send(result)
+        elif message.content.startswith("!!random"):
+            result = wikipedia.random(pages = 1)
             await message.channel.send(result)
         else:
             try:
@@ -47,8 +58,11 @@ async def on_message(message):
 
                 await message.channel.send(result)
             except:
-                pass
-
+                num = 5
+                search = Stringo[2:len(Stringo) - 1]
+                sentence = num
+                result = wikipedia.summary(search, sentence)
+                await message.channel.send(result)
 
 
 
