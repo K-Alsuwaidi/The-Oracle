@@ -4,10 +4,6 @@ from discord.ext import commands
 
 import wikipedia
 
-import nest_asyncio
-nest_asyncio.apply()
-
-
 bot = commands.Bot(command_prefix = '!!')
 
 @bot.event
