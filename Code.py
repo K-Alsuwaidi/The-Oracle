@@ -1,3 +1,4 @@
+
 import discord
 
 from discord.ext import commands
@@ -8,8 +9,8 @@ bot = commands.Bot(command_prefix = '!!')
 
 @bot.event
 async def on_ready():
-    game = discord.Game("prefix !!")
-    await bot.change_presence(status=discord.Status.dnd, activity=game)
+    game = discord.Game("Browing Wikipedia, Prefix: !!")
+    await bot.change_presence(status=discord.Status.online, activity=game)
     print("Online")
 
 
@@ -32,21 +33,22 @@ async def on_message(message):
             search = Stringo[8:]
             result = wikipedia.search(search, 20)
             await message.channel.send(result)
-            
-        elif message.content.startswith("!!page"): #searches for a specific page 
+
+        elif message.content.startswith("!!page"): #searches for a specific page
             search = Stringo[6:]
             result = wikipedia.page(search, preload=True)
             await message.channel.send(result)
-            
+
         elif message.content.startswith("!!random"): #returns a random page
-            result = wikipedia.random(pages = 1)
+            tempo = wikipedia.random(pages = 1)
+            result = wikipedia.summary(tempo, 4)
             await message.channel.send(result)
         elif message.content.startswith("!!image"): #returns an image about the topic
             search = Stringo[7:]
             WikipediaClass = wikipedia.WikipediaPage(search)
             result = WikipediaClass.images
             await message.channel.send(result)
-            
+
         elif message.content.startswith("!!categories"): #returns the categories about the topic
             search = Stringo[11:]
             try:
@@ -57,13 +59,13 @@ async def on_message(message):
                 await message.channel.send('Not found')
             else:
                 await message.channel.send(result)
-            
+
         elif message.content.startswith("!!link"): #returns the link about a topic
             search = Stringo[6:]
             WikipediaClass = wikipedia.WikipediaPage(search, preload=True)
             result = WikipediaClass.links
             await message.channel.send(result[:2000])
-            
+
         elif message.content.startswith("!!reference"): #return the refrences about a topic
             search = Stringo[10:]
             try:
@@ -73,13 +75,13 @@ async def on_message(message):
                 await message.channel.send("Not found")
             else:
                 await message.channel.send(result)
-            
+
         elif message.content.startswith("!!section"): #return the sections about a topic
             search = Stringo[9:]
             WikipediaClass = wikipedia.WikipediaPage(search)
             result = WikipediaClass.sections
             await message.channel.send(result)
-            
+
         elif message.content.startswith("!!suggest"): #return the suggested topic
             search = Stringo[9:]
             result = wikipedia.suggest(search)
@@ -94,7 +96,7 @@ async def on_message(message):
 
             await message.channel.send(result[0:2000])
 
-            
+
         elif message.content.startswith("!!summary"): #returns a summary, if num provided, it will be established with the user, else, num = 4, returns a summary about the topic.
              try:
                   num = int(Stringo[-1])
@@ -104,19 +106,19 @@ async def on_message(message):
                   search = Stringo[9:]
                   result = wikipedia.summary(search, num)
                   await message.channel.send(result)
-        elif message.content.startswith("!!s"):
+        elif message.content.startswith("!!sum"):
              try:
                   num = int(Stringo[-1])
              except ValueError:
                  num = 4
              finally:
-                  search = Stringo[9:]
+                  search = Stringo[5:]
                   result = wikipedia.summary(search, num)
                   await message.channel.send(result)
         else:
             await message.channel.send("Not valid")
-                  
-            
+
+
 
 
 bot.run(TOKEN)
