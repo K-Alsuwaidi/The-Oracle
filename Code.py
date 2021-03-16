@@ -134,15 +134,15 @@ async def on_message(message):
 
         elif message.content.startswith("~section"):
             search = Stringo[9:] #search
-            try: #if an error arises or the page doesnt exist
-                WikipediaClass = wikipedia.WikipediaPage(search) # makes the wikipedia class
-
-                result = WikipediaClass.categories #gets the categories
-            except: #if error arise
-                await message.channel.send('Page not found') #sends that page not found
-            else:
-                await message.channel.send(result) #send the result
-
+            page = WikiClass.page(search)
+            result = page.sections
+            StringReturned = ""
+            for i in result:
+                StringReturned += i.title #adds title
+                StringReturned += ": " #adds :
+                StringReturned += i.text[0:40] #adds text 40 chars
+                StringReturned += ", " #adds comma
+            await message.channel.send(StringReturned) #send msg
 
         elif message.content.startswith("~sum"):
             search = Stringo[5:] #gets the search
