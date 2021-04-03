@@ -15,10 +15,15 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 #import modules
 
+with open("TOKEN.txt", 'r') as f:
+    TOKEN = f.readline()
+    f.close()
+
 g = []
 WikiClass = wikipediaapi.Wikipedia(language='en', extract_format=wikipediaapi.ExtractFormat.WIKI) #initiates the wikipedia class
 Bot = Bot(command_prefix = '~') #sets the prefix
 Status = []
+
 @Bot.event  #on ready function
 async def on_ready():
     g.append("Browing Wikipedia")
@@ -34,7 +39,6 @@ async def on_message(message):
     if Stringo[0:1] == '~': #checks if its a command or normal msg
         Status.append('.')
         if len(Status) == 5:
-            stat=discord.Status.online
             for i in range(5):
                 Status.pop(0)
             if g[0] == ("Browing Wikipedia"):
@@ -452,14 +456,11 @@ async def on_message(message):
             m = str(message.guild) #sets the guild as m, type = str
             
             if dicto.get(m) != None: #checks if the user has set a language for the server
-            
                 for i in dicto.keys(): #checks the dicto keys 
-                
                     if i == m: #if the key matches the server name
-                    
                         if dicto[i] != "en":
                             await message.channel.send("Only works with english") #sends this msg if its not in english
-                            
+
                         else:
                             search1 = Stringo[8:] #finds the search
                             search2 = "https://simple.wikipedia.org/wiki/" + search1 #adds it to the url
@@ -492,9 +493,8 @@ async def on_message(message):
                 await message.channel.send(Returned) #sends the link    
             except: #if an error arose with the send function
                 await message.channel.send("Not found")     #sends this msg                 
-            
+        
         else:
             await message.channel.send("Unknown reference, please write ~help for more options, if you have a suggestion dm @Uy Scuti#3533 in discord") #if command doesnt match any of the above
-
 
 Bot.run(TOKEN)
