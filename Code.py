@@ -19,6 +19,18 @@ with open("TOKEN.txt", 'r') as f:
     TOKEN = f.readline()
     f.close()
 
+def ReturnLanguage(guild):
+    "returns the server's language"
+        with open("server_languages.json", "r") as f: #opens the file
+            dicto = json.load(f) #loads the dictionary
+            f.close() #closes the file
+
+        if dicto.get(guild) != None:
+            return dicto.get(guild)
+        return "en"
+            
+            
+
 g = []
 WikiClass = wikipediaapi.Wikipedia(language='en', extract_format=wikipediaapi.ExtractFormat.WIKI) #initiates the wikipedia class
 Bot = Bot(command_prefix = '~') #sets the prefix
