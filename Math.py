@@ -187,7 +187,7 @@ def e():
     return Return
 
 
-def tau():
+def Tau():
     """
     :return: Value of tau
     """

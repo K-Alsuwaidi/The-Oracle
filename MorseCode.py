@@ -108,7 +108,10 @@ def MorseDecoder(Message):
         for j in i[:len(i)-1]:
             x = Decode.get(j)
             if x == None:
-                return "There are letters that arent there"
+                if x == " ":
+                    pass
+                else:
+                    return "There are letters that arent there"
             else:
                 Word += x
         Sentence += Word
