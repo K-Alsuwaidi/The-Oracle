@@ -8,13 +8,6 @@ import wikipediaapi
 
 
 
-def Help():
-    """
-    :return: A string, with list of commands that can be engaged
-    """
-    return ("Wikipedia set commands: ~summary, ~search, ~reference, ~random, ~image, categories, ~link, ~test, ~section, ~sum, simple, and ~url")
-
-
 def Summary(Search, Language):
     """
     :param Search: Search

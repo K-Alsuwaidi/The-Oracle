@@ -2,8 +2,6 @@ import discord
 
 from discord.ext.commands import Bot
 
-import json
-
 from Wikipedia import *
 
 from Math import *
@@ -12,21 +10,28 @@ from MorseCode import *
 
 from Reminders import *
 
+from Cipher import *
+
+from English import *
+
 def ChangeLanguage(Guild, Language):
-    with open("ServerLanguage.json", 'w') as f:
+    with open("ServerLanguage.json", 'r') as f:
         dicto = json.load(f)
-        dicto[Guild] = Language
+        f.close()
+
+    dicto[Guild] = Language
+    with open("ServerLanguage.json", 'w') as f:
         json.dump(dicto, f)
         f.close()
     return None
 
 def ReturnLanguage(Guild):
+    Guild = str(Guild)
     with open("ServerLanguage.json", 'r') as f:
         dicto = json.load(f)
         f.close()
-
     if dicto.get(Guild) == None:
-        return 'en'
+       return 'en'
     return dicto.get(Guild)
 
 
@@ -45,7 +50,7 @@ Bot = Bot(command_prefix='~')  # sets the prefix
 
 @Bot.event
 async def on_ready():
-    await Bot.change_presence(status=discord.Status.online, activity=discord.Game("Waiting to help you"))
+    await Bot.change_presence(status=discord.Status.online, activity=discord.Streaming("Waitiing for help"))
     print("Online")
 
 
@@ -253,7 +258,7 @@ async def on_message(message):
             else:
                 Number = value[:value.index("/")]
                 Divided = value[value.index('/') +1:]
-                await message.channel.send(Remainder(Number, Divided))
+                await message.channel.send(Remainder(int(Number), int(Divided)))
 
         elif Message[0:17] == "~math eucdistance":
 
@@ -315,15 +320,15 @@ async def on_message(message):
         else:
             await message.channel.send("Invalid command")
 
-    elif Message[:6] == ("~morse"):
-        if Message[:13] == "~morse encode":
-            EncodeMessage = Message[14:]
-            EncodeMessage = MorseEncoder(EncodeMessage)
+    elif Message[:7] == ("~cipher"):
+        if Message[:15] == "~cipher encrypt":
+            EncodeMessage = Message[16:]
+            EncodeMessage = CipherEncrypt(EncodeMessage)
             await message.channel.send(EncodeMessage)
 
-        elif Message[:13] == "~morse decode":
-            DecodeMessdage = Message[14:]
-            DecodeMessdage = MorseDecoder(DecodeMessdage)
+        elif Message[:15] == "~cipher decrypt":
+            DecodeMessdage = Message[16:]
+            DecodeMessdage = CipherDecrypt(DecodeMessdage)
             await message.channel.send(DecodeMessdage)
 
     elif Message[:9] == "~reminder":
@@ -333,34 +338,73 @@ async def on_message(message):
 
         elif Message[:13] == "~reminder set":
             Reminder = Message[14:]
-            try:
-                SetReminders(message.author, Reminder)
-                await message.channel.send("Done")
-            except:
-                await message.channel.send("An unknown error occurred, please try again later")
+            SetReminders(message.author, Reminder)
+            await message.channel.send("Done")
 
         elif Message[:13] == "~reminder del":
             Reminder = Message[14:]
-            Result = DeleteReminder(message.name, Reminder)
+            Result = DeleteReminder(message.author, Reminder)
             if Result == False:
                 await message.channel.send("No Reminder exists by that name")
             else:
                 await message.channel.send("Done")
 
+    elif Message[:8] == "~english":
+        if Message[:12] == "~english def":
+            Returned = Meaning(Word=Message[13:])
+            await message.channel.send(Returned)
+
+        elif Message[:16] == "~english synonym":
+            Returned = Synonym(Word=Message[17:])
+            await message.channel.send(Returned)
+
+        elif Message[:16] == "~english antonym":
+            Returned = Antonym(Word=Message[17:])
+            await message.channel.send(Returned)
+
+    elif Message[:6] == "~morse":
+        if Message[:14] == "~morse encrypt":
+            Phrase = Message[15:]
+            x = MorseEncoder(Phrase)
+            await message.channel.send(x)
+        elif Message[:14] == "~morse decrypt":
+            Phrase = Message[15:]
+            x = MorseDecoder(Phrase)
+            await message.channel.send(x)
+
+
+
+
     elif Message[:9] == "~settings":
         Unit = Message[10:]
         Unit = Unit.lower()
         if Unit == "math":
-            Functions = ['SolveForX {equation}', 'SinD {value}', 'SinR {Value}', 'CosD {Value}', 'CosR {Value}', 'TanD {Value}', 'TanR {Value}', 'ArcSinD {Value}', 'ArcSinR {Value}', 'ArcCosD {Value}','ArcCosR {Value}', \
-                         'ArcTanD {Value}', 'ArcTanR {Value}', 'ToRadians {Value}', 'ToDegrees {Value}', 'Reminder ({dividend}, {divisor})', 'EucDistance ({x1}, {x2})_({x2},{y2})', 'pi', 'e', 'tau', 'ln {Value}', \
-                         'log ({Base}, {Value})', 'sqrt {Value}',  'pow ({Base}, {Exponent}'
-                        ]
+                Message = 'Math set commands: SolveForX {equation}, SinD {value}, SinR {Value}, CosD {Value}, CosR {Value}, TanD {Value}, TanR {Value}, ArcSinD {Value}, ' \
+                          'ArcSinR {Value}, ArcCosD {Value}, ArcCosR {Value}, ArcTanD {Value}, ArcTanR {Value}, ToRadians {Value}, ToDegrees {Value}, Reminder ({dividend}, ' \
+                          '{divisor}), EucDistance ({x1}, {x2})_({x2},{y2}), pi, e, tau, ln {Value}, log ({Base}, {Value}), sqrt {Value}, and pow ({Base}, {Exponent}'
+                await message.channel.send(Message)
+
         elif Unit == "reminder":
+            Message = "Reminder set commands: set {reminder}, get, and del {reminder}."
+            await message.channel.send(Message)
+
+        elif Unit == "cipher":
+            Message = "Cipher set commands: encrypt {Message}, decrypt {message}. the layers are made by me and are not accessible only. I dont hold any responsilbity if the message has been decrypted."
+            await message.channel.send(Message)
+
+        elif Unit[:9] == "wikipedia":
+            if Message.split(" ")[-1] == "wikipedia":
+                await message.channel.send("Wikipedia set commands: summary, search, reference, random, image, categories, link, test, section, sum, simple, and url")
+            else:
+                ChangeLanguage(str(message.guild), Message.split(" ")[-1])
+                Message = "Language Set To: " + Message.split(" ")[-1]
+                await message.channel.send(Message)
+
             pass
-        elif Unit == "morse":
-            pass
-        elif Unit == "wikipedia":
-            pass
+        elif Unit == "English":
+            Message = "English set commands: Meaning {word}, Synonym {word}, and Antonym {word}."
+            await message.channel.send(Message)
+
         else:
             message.channel.send("No Unit by that name is found")
 

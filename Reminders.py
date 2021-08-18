@@ -1,10 +1,12 @@
+import json
 def GetReminders(Name):
     """
     :param Name: Name of user
     :return: returns a list of reminders if present else None
     """
+    Name = "{}".format(Name)
     with open("Reminders.json", "r") as f:
-        Dicto = f.load()
+        Dicto = json.load(f)
         try:
             Reminders = Dicto[Name]
             f.close()
@@ -18,17 +20,22 @@ def SetReminders(Name, Reminder):
     :param Reminder: Reminder in string format
     :return: Nothing
     """
+    Name = "{}".format(Name)
+    with open("Reminders.json", 'r') as f:
+        Dicto = json.load(f)
+        f.close()
+
     with open("Reminders.json", 'w') as f:
-        Dicto = f.load()
         try:
             Listo = Dicto[Name]
             Listo.append(Reminder)
             Dicto[Name] = Listo
-            f.dump(Dicto)
+            json.dump(Dicto, f)
         except:
             Listo = [Reminder]
             Dicto[Name] = Listo
-            f.dump(Dicto)
+            json.dump(Dicto, f)
+        f.close()
 
 
 def DeleteReminder(Name, Reminder):
@@ -37,15 +44,25 @@ def DeleteReminder(Name, Reminder):
     :param Reminder: Reminder in string format
     :return: Nothing
     """
-    with open('Reminders.json', 'w') as f:
-        Dicto = f.load()
+    Name = "{}".format(Name)
+
+    with open('Reminders.json', 'r') as f:
+        Dicto = json.load(f)
+    f.close()
+
+    with open("Reminders.json", 'w') as f:
         try:
             Listo = Dicto[Name]
             NewList = []
             for i in Listo:
+                print(i)
+                print(Reminder)
                 if Reminder == i:
                     pass
                 else:
                     NewList.append(i)
+            Dicto[Name] = NewList
+            json.dump(Dicto, f)
         except:
-            return None
+            return False
+        f.close()
