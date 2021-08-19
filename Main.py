@@ -50,7 +50,7 @@ Bot = Bot(command_prefix='~')  # sets the prefix
 
 @Bot.event
 async def on_ready():
-    await Bot.change_presence(status=discord.Status.online, activity=discord.Streaming("Waitiing for help"))
+    await Bot.change_presence(status=discord.Status.online)
     print("Online")
 
 

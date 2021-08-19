@@ -55,8 +55,6 @@ def DeleteReminder(Name, Reminder):
             Listo = Dicto[Name]
             NewList = []
             for i in Listo:
-                print(i)
-                print(Reminder)
                 if Reminder == i:
                     pass
                 else:
