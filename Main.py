@@ -410,4 +410,4 @@ async def on_message(message):
 
 
 
-Bot.run("ODQ4NDc0OTA5MTU0NzM4MjA2.YLNJ1g.tdzcgXxlLGWG7bSqVXK5Ic3TTUA")
+Bot.run(TOKEN) #Please input your own token here
